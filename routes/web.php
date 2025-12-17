@@ -3,20 +3,51 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UrlShortenerController;
 use App\Http\Controllers\GoogleAuthController;
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::get('/google-auth', function () {
-    return view('google-auth');
-});
-Route::get('/{short_code}', [UrlShortenerController::class, 'redirect']);
-//DEVOLVER JSON
-Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect']);
-Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback']);
+use App\Models\Domain;
+use App\Models\UserShortUrl;
+use App\Http\Controllers\UrlUserController;
+Route::domain('{subdomain}.local.yocoshort.com')->group(function () {
+    Route::get('/', function ($subdomain) {
+        return redirect('http://local.yocoshort.com');
+    });
+    Route::get('/{short_code}', function ($subdomain, $short_code) {
+        $domainModel = Domain::where('subdomain', $subdomain)->first();
+        if (!$domainModel) {
+            abort(404, 'Subdominio no encontrado');
+        }
+        $link = UserShortUrl::where('domain_id', $domainModel->id)
+            ->where('short_code', $short_code)
+            ->first();
 
-//DEVOLVER BLADE
-Route::get('/auth/google/redirect-web', [GoogleAuthController::class, 'redirectToGoogle']); // ← DEBES USAR ESTA
-Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
-Route::get('/profile', function () {
-    return view('profile');
-})->middleware('auth:sanctum');
+        if (!$link) {
+            abort(404, 'Link no encontrado');
+        }
+        $link->increment('clicks');
+        return redirect()->away($link->original_url);
+    });
+});
+
+
+Route::domain('local.yocoshort.com')->group(function () {
+
+    Route::get('/', function () {
+        return view('welcome');
+    });
+
+    Route::get('/google-auth', function () {
+        return view('google-auth');
+    });
+
+    Route::get('/auth/google/redirect-web', [GoogleAuthController::class, 'redirectToGoogle'])->name('login.google');
+    Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
+
+    Route::get('/profile', function () {
+        return view('profile');
+    })->middleware('auth:sanctum');
+    Route::get('/{short_code}', [UrlShortenerController::class, 'redirect']); 
+
+});
+
+Route::domain('{subdomain}.local.yocoshort.com')->group(function () {
+    Route::get('/{short_code}', [UrlUserController::class, 'handleRedirect']);
+});

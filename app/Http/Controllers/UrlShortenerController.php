@@ -15,8 +15,7 @@ class UrlShortenerController extends Controller
      * @return void
      * Función Post que valida la ulr maxima de 500 caracteres, crea un 
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request){
         $request->validate([
             'long_url' => 'required|url|max:500'
         ]);
@@ -25,27 +24,29 @@ class UrlShortenerController extends Controller
 
         $detect = Url::where('long_url', $longUrl)->first();
 
-        if($detect){
+        if ($detect) {
             $detect->update(['expires_at' => now()->addDays(2)]);
-            return response()->json( [
-                'short_url'=> url($detect->short_code),
+            return response()->json([
+                'short_url' => url($detect->short_code),
                 'expires_at' => $detect->expires_at
             ]);
         }
-        do{
+        do {
             $unique_code = Str::random(7);
-        }while(Url::where('short_code',$unique_code)->exists());
+        } while (Url::where('short_code', $unique_code)->exists());
         $url = Url::create([
-            'long_url' =>$longUrl,
+            'long_url' => $longUrl,
             'short_code' => $unique_code,
             'clicks' => 0,
             'expires_at' => now()->addDays(7)
         ]);
-        return response()->json( [
-            'short_url'=> url($url->short_code),
+        return response()->json([
+            'short_url' => url($url->short_code),
             'expires_at' => $url->expires_at
         ]);
     }
+
+
     public function redirect($short_code){
         $url = Url::where('short_code', $short_code)->first(); //Buscar el primer short_code similar en db.
         if (!$url) {
@@ -60,7 +61,7 @@ class UrlShortenerController extends Controller
      * Ejemplo de Como insertar directamente sin usar un Request.
      * Devuelve con la función url del backend, sumado con el objeto url-shortcode
      */
-    public function example (){
+    public function example(){
         $url = Url::create([
             'long_url' => 'https://youtube.com',
             'short_code' => 'ansdak1',
@@ -75,6 +76,4 @@ class UrlShortenerController extends Controller
      * Defines el pasametro en static::created(function ($url) cuando hay un estado created.
      * @return void
      */
-
-
 }
