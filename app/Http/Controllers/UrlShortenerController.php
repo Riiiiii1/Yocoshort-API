@@ -54,9 +54,6 @@ class UrlShortenerController extends Controller
             abort(404);
         }
 
-        // DEBUG: Descomenta la línea de abajo para ver qué está llegando exactamente
-        dd($url->long_url); 
-
         $url->increment('clicks');
         return redirect()->away($url->long_url);
     }
