@@ -6,39 +6,22 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Models\Domain;
 use App\Models\UserShortUrl;
 use App\Http\Controllers\UrlUserController;
-use Illuminate\Support\Facades\Artisan;
-Route::domain('{subdomain}.local.yocoshort.com')->group(function () {
-    Route::get('/', function ($subdomain) {
-        return redirect('http://local.yocoshort.com');
-    });
-    Route::get('/{short_code}', function ($subdomain, $short_code) {
-        $domainModel = Domain::where('subdomain', $subdomain)->first();
-        if (!$domainModel) {
-            abort(404, 'Subdominio no encontrado');
-        }
-        $link = UserShortUrl::where('domain_id', $domainModel->id)
-            ->where('short_code', $short_code)
-            ->first();
 
-        if (!$link) {
-            abort(404, 'Link no encontrado');
-        }
-        $link->increment('clicks');
-        return redirect()->away($link->original_url);
+$mainApiHost = parse_url(config('app.url'), PHP_URL_HOST);
+$shortLinkDomain = config('app.short_link_domain', 'yocoshort.com');
+
+Route::domain('{subdomain}.' . $shortLinkDomain)->group(function () {
+    Route::get('/', function ($subdomain) {
+        return redirect(config('app.frontend_url', 'https://www.yocoshort.com'));
     });
+    Route::get('/{short_code}', [UrlUserController::class, 'handleRedirect']);
 });
 
-
-Route::domain('local.yocoshort.com')->group(function () {
+Route::domain($mainApiHost)->group(function () {
 
     Route::get('/', function () {
         return view('welcome');
     });
-
-    Route::get('/google-auth', function () {
-        return view('google-auth');
-    });
-
     Route::get('/auth/google/redirect-web', [GoogleAuthController::class, 'redirectToGoogle'])->name('login.google');
     Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 
@@ -47,8 +30,4 @@ Route::domain('local.yocoshort.com')->group(function () {
     })->middleware('auth:sanctum');
     Route::get('/{short_code}', [UrlShortenerController::class, 'redirect']); 
 
-});
-
-Route::domain('{subdomain}.local.yocoshort.com')->group(function () {
-    Route::get('/{short_code}', [UrlUserController::class, 'handleRedirect']);
 });
