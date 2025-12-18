@@ -28,14 +28,7 @@ Route::domain('{subdomain}.local.yocoshort.com')->group(function () {
     });
 });
 
-Route::get('/init-db-yocoshort', function () {
-    try {
-        Artisan::call('migrate', ['--force' => true]);
-        return "Migraciones ejecutadas con éxito: " . Artisan::output();
-    } catch (\Exception $e) {
-        return "Error al migrar: " . $e->getMessage();
-    }
-});
+
 Route::domain('local.yocoshort.com')->group(function () {
 
     Route::get('/', function () {
