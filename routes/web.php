@@ -6,6 +6,7 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Models\Domain;
 use App\Models\UserShortUrl;
 use App\Http\Controllers\UrlUserController;
+use Illuminate\Support\Facades\Artisan;
 Route::domain('{subdomain}.local.yocoshort.com')->group(function () {
     Route::get('/', function ($subdomain) {
         return redirect('http://local.yocoshort.com');
@@ -27,7 +28,14 @@ Route::domain('{subdomain}.local.yocoshort.com')->group(function () {
     });
 });
 
-
+Route::get('/init-db-yocoshort', function () {
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        return "Migraciones ejecutadas con éxito: " . Artisan::output();
+    } catch (\Exception $e) {
+        return "Error al migrar: " . $e->getMessage();
+    }
+});
 Route::domain('local.yocoshort.com')->group(function () {
 
     Route::get('/', function () {
