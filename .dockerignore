@@ -1,0 +1,7 @@
+.env
+/vendor
+/node_modules
+/storage/*.key
+.git
+.dockerignore
+Dockerfile
