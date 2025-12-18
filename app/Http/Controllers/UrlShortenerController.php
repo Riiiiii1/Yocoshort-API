@@ -48,10 +48,15 @@ class UrlShortenerController extends Controller
 
 
     public function redirect($short_code){
-        $url = Url::where('short_code', $short_code)->first(); //Buscar el primer short_code similar en db.
+        $url = Url::where('short_code', $short_code)->first();
+        
         if (!$url) {
-            abort(404); // Abortar si no hay coincidencias
+            abort(404);
         }
+
+        // DEBUG: Descomenta la línea de abajo para ver qué está llegando exactamente
+        dd($url->long_url); 
+
         $url->increment('clicks');
         return redirect()->away($url->long_url);
     }
