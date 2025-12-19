@@ -39,6 +39,6 @@ Route::prefix('auth/google')->group(function () {
 Route::get('/profile', function () {
     return view('profile');
 })->middleware('auth:sanctum');
-
+// Redireccion
 // Redireccionamiento simple
 Route::get('/{short_code}', [UrlShortenerController::class, 'redirect'])->name('url.redirect');
