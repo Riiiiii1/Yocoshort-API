@@ -78,4 +78,21 @@ class UrlShortenerController extends Controller
      * Defines el pasametro en static::created(function ($url) cuando hay un estado created.
      * @return void
      */
+
+    // Limpieza de URLs caducadas desde un cronjob
+    public function cleanup(Request $request) {
+        if ($request->query('key') !== config('app.cron_secret', 'ko1022123834mdsjqolzdm')) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        $deletedCount = Url::whereNotNull('expires_at')
+            ->where('expires_at', '<', now())
+            ->delete();
+
+        return response()->json([
+            'status' => 'alive',
+            'message' => 'Expired URLs cleaned up successfully',
+            'deleted_count' => $deletedCount,
+            'timestamp' => now()
+        ]);
+    }
 }

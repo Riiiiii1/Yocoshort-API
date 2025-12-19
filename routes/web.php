@@ -10,7 +10,7 @@ $shortLinkDomain = config('app.short_link_domain', 'yocoshort.com');
 
 
 Route::domain($mainApiHost)->group(function () {
-    
+    Route::get('/system/cleanup', [UrlShortenerController::class, 'cleanup']);
     Route::get('/', function () {
         return view('welcome');
     });
