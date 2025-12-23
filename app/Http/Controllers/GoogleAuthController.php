@@ -10,10 +10,37 @@ use Laravel\Socialite\Facades\Socialite;
 
 class GoogleAuthController extends Controller
 {
+    /**
+     * @OA\Get(
+     * path="/auth/google/redirect-web",
+     * summary="Iniciar sesión con Google",
+     * description="Redirige al usuario a la pantalla de consentimiento de Google.",
+     * tags={"Auth"},
+     * @OA\Response(
+     * response=302,
+     * description="Redirección a los servidores de Google"
+     * )
+     * )
+     */
     public function redirectToGoogle(){
         return Socialite::driver('google')->stateless()->redirect();
     }
-
+    /**
+     * @OA\Get(
+     * path="/auth/google/callback",
+     * summary="Callback de Google",
+     * description="Maneja la respuesta de Google. Si el login es exitoso, redirige al Frontend con el token en la URL.",
+     * tags={"Auth"},
+     * @OA\Response(
+     * response=302,
+     * description="Redirección al Dashboard del Frontend (?token=...)"
+     * ),
+     * @OA\Response(
+     * response=500,
+     * description="Error en el servidor o cancelación del usuario"
+     * )
+     * )
+     */
     public function handleGoogleCallback(Request $request){
         try {
             $googleUser = Socialite::driver('google')->stateless()->user();

@@ -10,10 +10,27 @@ use Illuminate\Support\Str;
 class UrlShortenerController extends Controller
 {
     /**
-     * Summary of store
-     * @param \Illuminate\Http\Request $request
-     * @return void
-     * Función Post que valida la ulr maxima de 500 caracteres, crea un 
+     * @OA\Post(
+     * path="/api/long-url",
+     * summary="Acortar enlace publico sin loggeo.",
+     * description="Crea un enlace corto temporal sin necesidad de registro.",
+     * tags={"Public Shortener"},
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\JsonContent(
+     * @OA\Property(property="long_url", type="string", format="url", example="https://youtube.com")
+     * )
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Enlace creado o renovado",
+     * @OA\JsonContent(
+     * @OA\Property(property="short_url", type="string", example="http://short.gy/AbCd12"),
+     * @OA\Property(property="expires_at", type="string", format="date-time")
+     * )
+     * ),
+     * @OA\Response(response=422, description="URL inválida o muy larga")
+     * )
      */
     public function store(Request $request){
         $request->validate([
@@ -45,8 +62,25 @@ class UrlShortenerController extends Controller
             'expires_at' => $url->expires_at
         ]);
     }
-
-
+    /**
+     * @OA\Get(
+     * path="/{short_code}",
+     * summary="Redireccionar enlace público",
+     * tags={"Public Shortener"},
+     * @OA\Parameter(
+     * name="short_code",
+     * in="path",
+     * required=true,
+     * description="Código del enlace corto",
+     * @OA\Schema(type="string")
+     * ),
+     * @OA\Response(
+     * response=302,
+     * description="Redirección a la URL original"
+     * ),
+     * @OA\Response(response=404, description="Enlace no encontrado o expirado")
+     * )
+     */
     public function redirect($short_code){
         $url = Url::where('short_code', $short_code)->first();
         
@@ -57,11 +91,18 @@ class UrlShortenerController extends Controller
         $url->increment('clicks');
         return redirect()->away($url->long_url);
     }
+
     /**
-     * Summary of example
-     * @return \Illuminate\Http\JsonResponse
-     * Ejemplo de Como insertar directamente sin usar un Request.
-     * Devuelve con la función url del backend, sumado con el objeto url-shortcode
+     * @OA\Get(
+     * path="/api/example",
+     * summary="Ejemplo de creación manual",
+     * tags={"Public Shortener"},
+     * @OA\Response(
+     * response=200,
+     * description="Ejemplo ejecutado",
+     * @OA\JsonContent(@OA\Property(property="short_url", type="string"))
+     * )
+     * )
      */
     public function example(){
         $url = Url::create([
@@ -73,13 +114,30 @@ class UrlShortenerController extends Controller
             'short_url' => url('/' . $url->short_code)
         ]);
     }
-    /**
-     * Función que se ejecuta al momento de ejecutarse el evento de creación de registro. En este caso URL::create 
-     * Defines el pasametro en static::created(function ($url) cuando hay un estado created.
-     * @return void
-     */
 
-    // Limpieza de URLs caducadas desde un cronjob
+    /**
+     * @OA\Delete(
+     * path="/api/cleanup",
+     * summary="Limpiar enlaces expirados (Cronjob)",
+     * tags={"System"},
+     * @OA\Parameter(
+     * name="key",
+     * in="query",
+     * required=true,
+     * description="Clave secreta del Cronjob",
+     * @OA\Schema(type="string")
+     * ),
+     * @OA\Response(
+     * response=200,
+     * description="Limpieza exitosa",
+     * @OA\JsonContent(
+     * @OA\Property(property="status", type="string", example="alive"),
+     * @OA\Property(property="deleted_count", type="integer", example=5)
+     * )
+     * ),
+     * @OA\Response(response=401, description="Unauthorized (Clave incorrecta)")
+     * )
+     */
     public function cleanup(Request $request) {
         if ($request->query('key') !== config('app.cron_secret', 'ko1022123834mdsjqolzdm')) {
             return response()->json(['error' => 'Unauthorized'], 401);

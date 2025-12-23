@@ -1,0 +1,1089 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API YocoShort",
+        "description": "Documentación oficial de YocoShort",
+        "contact": {
+            "email": "sisabuestandavidesteban@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://api.yocoshort.com",
+            "description": "Servidor de Producción en Render"
+        },
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "Servidor Local para desarrollo"
+        }
+    ],
+    "paths": {
+        "/api/admin/stats": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Obtener estadísticas generales y lista de usuarios",
+                "operationId": "9aca7d759e1013283b1ac06be9bfc586",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página para la paginación",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Cantidad de usuarios por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Estadísticas obtenidas exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "total_users": {
+                                            "type": "integer",
+                                            "example": 150
+                                        },
+                                        "total_links": {
+                                            "type": "integer",
+                                            "example": 5300
+                                        },
+                                        "users": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Juan Pérez"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "format": "email",
+                                                        "example": "juan@test.com"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 50
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    }
+                }
+            }
+        },
+        "/api/admin/users/search": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Buscar usuarios por nombre o email",
+                "operationId": "dd1bfb223b9b7dc59c7086230e5d7492",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Término de búsqueda (nombre o email)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "juan"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Cantidad de resultados por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Búsqueda exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "users": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Juanito"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "example": "juanito@mail.com"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Registrar nuevo usuario",
+                "operationId": "8a56853624e025573120a09a4c75d468",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Juan Pérez"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan@test.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "secret123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuario registrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario registrado exitosamente..."
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/verify-email/{token}": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verificar correo electrónico",
+                "description": "Este endpoint recibe el token del email y redirige al Frontend.",
+                "operationId": "43c21085a5063650bfdc146fad8261ce",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "description": "Token de verificación enviado por correo",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Redirección al Frontend"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Iniciar sesión",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "juan@test.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "secret123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login exitoso"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "access_token": {
+                                                    "type": "string",
+                                                    "example": "1|AbCdEf..."
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "Bearer"
+                                                },
+                                                "redirect_to": {
+                                                    "type": "string",
+                                                    "example": "/dashboard"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciales incorrectas"
+                    },
+                    "403": {
+                        "description": "Email no verificado"
+                    }
+                }
+            }
+        },
+        "/api/user": {
+            "put": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Actualizar perfil de usuario",
+                "operationId": "716179a18c17d4467b4d3e4d0b6dc6ff",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Juan Nuevo"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Perfil actualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Perfil actualizado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Eliminar cuenta de usuario",
+                "operationId": "0d972b7ee196bae6a0c12cec906bc007",
+                "responses": {
+                    "200": {
+                        "description": "Cuenta eliminada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cuenta eliminada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/domain": {
+            "get": {
+                "tags": [
+                    "Domains"
+                ],
+                "summary": "Obtener configuración de mi dominio",
+                "operationId": "d7f46227e6e2d3fe0963a7f457f44aa5",
+                "responses": {
+                    "200": {
+                        "description": "Información del dominio",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "subdomain": {
+                                            "type": "string",
+                                            "example": "mi-marca"
+                                        },
+                                        "user_id": {
+                                            "type": "integer",
+                                            "example": 10
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No tienes dominio configurado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Domains"
+                ],
+                "summary": "Crear o actualizar mi subdominio",
+                "operationId": "af09a62f07cee038723fe722f30b0c7c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "subdomain": {
+                                        "description": "Min 3, Max 20 caracteres",
+                                        "type": "string",
+                                        "example": "mi-marca"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Dominio configurado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Subdominio configurado exitosamente."
+                                        },
+                                        "domain": {
+                                            "type": "string",
+                                            "example": "mi-marca.yocoshort.com"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Subdominio reservado, duplicado o inválido"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Domains"
+                ],
+                "summary": "Eliminar mi subdominio",
+                "operationId": "d6e6eead7bfdf6d0f067fabfb8743879",
+                "responses": {
+                    "200": {
+                        "description": "Dominio eliminado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Dominio eliminado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No existe dominio para eliminar"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/google/redirect-web": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Iniciar sesión con Google",
+                "description": "Redirige al usuario a la pantalla de consentimiento de Google.",
+                "operationId": "b3f28a223cee781ac4a5796b7d4bfca2",
+                "responses": {
+                    "302": {
+                        "description": "Redirección a los servidores de Google"
+                    }
+                }
+            }
+        },
+        "/auth/google/callback": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Callback de Google",
+                "description": "Maneja la respuesta de Google. Si el login es exitoso, redirige al Frontend con el token en la URL.",
+                "operationId": "e9b82bcbf1bf4ce865aa533070f20eb8",
+                "responses": {
+                    "302": {
+                        "description": "Redirección al Dashboard del Frontend (?token=...)"
+                    },
+                    "500": {
+                        "description": "Error en el servidor o cancelación del usuario"
+                    }
+                }
+            }
+        },
+        "/api/long-url": {
+            "post": {
+                "tags": [
+                    "Public Shortener"
+                ],
+                "summary": "Acortar enlace publico sin loggeo.",
+                "description": "Crea un enlace corto temporal sin necesidad de registro.",
+                "operationId": "6c905e92fb3f6464f0023a9d3b3b50a8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "long_url": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://youtube.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Enlace creado o renovado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "short_url": {
+                                            "type": "string",
+                                            "example": "http://short.gy/AbCd12"
+                                        },
+                                        "expires_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "URL inválida o muy larga"
+                    }
+                }
+            }
+        },
+        "/{short_code}": {
+            "get": {
+                "tags": [
+                    "Public Shortener"
+                ],
+                "summary": "Redireccionar enlace público",
+                "operationId": "aabe76bcb7406ebc69e67dbb91644e57",
+                "parameters": [
+                    {
+                        "name": "short_code",
+                        "in": "path",
+                        "description": "Código del enlace corto",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Redirección a la URL original"
+                    },
+                    "404": {
+                        "description": "Enlace no encontrado o expirado"
+                    }
+                }
+            }
+        },
+        "/api/example": {
+            "get": {
+                "tags": [
+                    "Public Shortener"
+                ],
+                "summary": "Ejemplo de creación manual",
+                "operationId": "08fcf875cc8aa79318f52259348cb471",
+                "responses": {
+                    "200": {
+                        "description": "Ejemplo ejecutado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "short_url": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/cleanup": {
+            "delete": {
+                "tags": [
+                    "System"
+                ],
+                "summary": "Limpiar enlaces expirados (Cronjob)",
+                "operationId": "2ab893d078709edf8cb61eeda3104622",
+                "parameters": [
+                    {
+                        "name": "key",
+                        "in": "query",
+                        "description": "Clave secreta del Cronjob",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Limpieza exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "alive"
+                                        },
+                                        "deleted_count": {
+                                            "type": "integer",
+                                            "example": 5
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized (Clave incorrecta)"
+                    }
+                }
+            }
+        },
+        "/api/links": {
+            "get": {
+                "tags": [
+                    "User Links"
+                ],
+                "summary": "Listar todos mis enlaces",
+                "operationId": "524d62542e36f8f16e2546a2c966962c",
+                "responses": {
+                    "200": {
+                        "description": "Lista de enlaces obtenida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "short_code": {
+                                                        "type": "string",
+                                                        "example": "promo-2025"
+                                                    },
+                                                    "original_url": {
+                                                        "type": "string",
+                                                        "example": "https://google.com"
+                                                    },
+                                                    "clicks": {
+                                                        "type": "integer",
+                                                        "example": 120
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "User Links"
+                ],
+                "summary": "Crear un nuevo enlace corto",
+                "operationId": "1662829072423f1f1feffec526b5941e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "original_url": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://www.google.com"
+                                    },
+                                    "etiquetas": {
+                                        "type": "string",
+                                        "example": "Campaña Verano"
+                                    },
+                                    "custom_alias": {
+                                        "type": "string",
+                                        "example": "promo-2025"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Enlace creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Link creado exitosamente."
+                                        },
+                                        "short_url": {
+                                            "type": "string",
+                                            "example": "http://marca.yocoshort.com/promo-2025"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación o falta configurar dominio"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/links/{id}": {
+            "put": {
+                "tags": [
+                    "User Links"
+                ],
+                "summary": "Actualizar alias (short code)",
+                "operationId": "8f1df907e6a5ca85677664934e6dbb32",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del enlace",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "short_code": {
+                                        "type": "string",
+                                        "example": "nuevo-alias"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Actualizado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Alias actualizado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Link no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "User Links"
+                ],
+                "summary": "Eliminar un enlace",
+                "operationId": "4db677de606cf59fe13b945effe2e2d8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del enlace",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Eliminado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Link eliminado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/links/{id}/metrics": {
+            "get": {
+                "tags": [
+                    "User Links"
+                ],
+                "summary": "Obtener métricas detalladas",
+                "description": "Devuelve total de clicks, desglose por navegadores y lista reciente.",
+                "operationId": "7473c43003058644854a9f07c5e969bc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del enlace",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Métricas procesadas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "total_clicks": {
+                                            "type": "integer",
+                                            "example": 150
+                                        },
+                                        "browsers": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "browser": {
+                                                        "type": "string",
+                                                        "example": "Chrome"
+                                                    },
+                                                    "total": {
+                                                        "type": "integer",
+                                                        "example": 45
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "recent": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "ip_address": {
+                                                        "type": "string",
+                                                        "example": "192.168.1.1"
+                                                    },
+                                                    "platform": {
+                                                        "type": "string",
+                                                        "example": "Windows"
+                                                    },
+                                                    "clicked_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Link no encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Admin",
+            "description": "Admin"
+        },
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Domains",
+            "description": "Domains"
+        },
+        {
+            "name": "Public Shortener",
+            "description": "Public Shortener"
+        },
+        {
+            "name": "System",
+            "description": "System"
+        },
+        {
+            "name": "User Links",
+            "description": "User Links"
+        }
+    ]
+}
