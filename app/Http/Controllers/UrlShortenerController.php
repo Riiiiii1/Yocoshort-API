@@ -139,7 +139,7 @@ class UrlShortenerController extends Controller
      * )
      */
     public function cleanup(Request $request) {
-        if ($request->query('key') !== config('app.cron_secret', 'ko1022123834mdsjqolzdm')) {
+        if ($request->query('key') !== env('CRON_SECRET')) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
         $deletedCount = Url::whereNotNull('expires_at')
