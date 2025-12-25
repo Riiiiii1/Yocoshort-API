@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "16bf62553bf8f1f21544c6cda1021fad",
+    "content-hash": "84ef2242111066e236aac7c7be3c9772",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -5117,16 +5117,16 @@
         },
         {
             "name": "resend/resend-laravel",
-            "version": "v1.0.0",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/resend/resend-laravel.git",
-                "reference": "b1341bf386746766c8b3c3e5a36fa5ccd4a39ced"
+                "reference": "90492b2357d11fe24e6db37ff7b2af7eead64d98"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/resend/resend-laravel/zipball/b1341bf386746766c8b3c3e5a36fa5ccd4a39ced",
-                "reference": "b1341bf386746766c8b3c3e5a36fa5ccd4a39ced",
+                "url": "https://api.github.com/repos/resend/resend-laravel/zipball/90492b2357d11fe24e6db37ff7b2af7eead64d98",
+                "reference": "90492b2357d11fe24e6db37ff7b2af7eead64d98",
                 "shasum": ""
             },
             "require": {
@@ -5139,8 +5139,8 @@
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.14",
                 "mockery/mockery": "^1.5",
-                "orchestra/testbench": "^8.17|^9.0|^10.0",
-                "pestphp/pest": "^2.0|^3.7"
+                "orchestra/testbench": "^8.17|^9.0|^10.8",
+                "pestphp/pest": "^2.0|^3.7|^4.0"
             },
             "type": "library",
             "extra": {
@@ -5180,9 +5180,9 @@
             ],
             "support": {
                 "issues": "https://github.com/resend/resend-laravel/issues",
-                "source": "https://github.com/resend/resend-laravel/tree/v1.0.0"
+                "source": "https://github.com/resend/resend-laravel/tree/v1.1.0"
             },
-            "time": "2025-11-11T03:07:39+00:00"
+            "time": "2025-12-09T06:14:20+00:00"
         },
         {
             "name": "resend/resend-php",
