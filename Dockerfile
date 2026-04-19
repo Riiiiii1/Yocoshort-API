@@ -1,4 +1,4 @@
-# Configuracion de despliegue de Docker para Yocoshort (PHP).
+# Configuracion de despliegue de Docker para Yocoshort 
 FROM php:8.2-apache
 RUN apt-get update && apt-get install -y \
     libpq-dev \
@@ -24,4 +24,4 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+CMD ["/bin/sh", "-c", "php artisan migrate --force && apache2-foreground"]
