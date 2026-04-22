@@ -1,4 +1,5 @@
 FROM php:8.2-apache
+
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     libpng-dev \
@@ -20,6 +21,8 @@ COPY . /var/www/html
 RUN cp .env.example .env
 
 RUN composer install --no-dev --optimize-autoloader
+
+RUN php artisan config:clear
 
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
