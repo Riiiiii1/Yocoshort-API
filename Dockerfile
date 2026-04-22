@@ -23,5 +23,7 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 EXPOSE 80
-
-CMD ["/bin/sh", "-c", "php artisan migrate --force && apache2-foreground"]
+RUN cp .env.example .env || true
+RUN php artisan config:cache
+RUN php artisan route:cache
+CMD ["/bin/sh", "-c", "php artisan migrate --force && /usr/sbin/apache2ctl -D FOREGROUND"]
