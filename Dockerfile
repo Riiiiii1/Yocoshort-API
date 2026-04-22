@@ -1,4 +1,3 @@
-# Configuracion de despliegue de Docker para Yocoshort 
 FROM php:8.2-apache
 RUN apt-get update && apt-get install -y \
     libpq-dev \
@@ -18,12 +17,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY . /var/www/html
 
+RUN cp .env.example .env
+
 RUN composer install --no-dev --optimize-autoloader
 
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 EXPOSE 80
-RUN cp .env.example .env || true
-RUN php artisan config:cache
-RUN php artisan route:cache
-CMD ["/bin/sh", "-c", "php artisan migrate --force && /usr/sbin/apache2ctl -D FOREGROUND"]
+
+CMD ["/bin/sh", "-c", "php artisan config:clear && php artisan cache:clear && php artisan migrate --force && apache2-foreground"]
